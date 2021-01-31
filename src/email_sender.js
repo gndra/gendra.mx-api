@@ -35,7 +35,13 @@ const emailBody = (name, lastName, email, company, phone, body) => ({
       },
       Text: {
         Charset: "UTF-8",
-        Data: `Hay un nuevo contacto en la página de gendra.mx\nNombre: ${name}\nApellido: ${lastName}\nCorreo: ${email}\nCompañia: ${company}\nTeléfono: ${phone}\nMensaje: ${body}`
+        Data: `Hay un nuevo contacto en la página de gendra.mx
+          Nombre: ${name}
+          Apellido: ${lastName}
+          Correo: ${email}
+          Compañia: ${company}
+          Teléfono: ${phone}
+          Mensaje: ${body}`
       }
     },
     Subject: {
@@ -50,14 +56,24 @@ const emailBody = (name, lastName, email, company, phone, body) => ({
 export default async (req, res) => {
   const { name, lastName, email, company, phone, body } = req.body
 
-  await awsEmail.sendEmail(emailBody(
-    name,
-    lastName,
-    email,
-    company,
-    phone,
-    body
-  )).promise();
+  try {
+    const response = await awsEmail.sendEmail(emailBody(
+      name,
+      lastName,
+      email,
+      company,
+      phone,
+      body
+    )).promise();
 
-  return res.send({ test: true })
+    return res.send({
+      success: true,
+      result: response
+    })
+  } catch (err) {
+    return res.send({
+      success: false,
+      result: err
+    })
+  }
 }

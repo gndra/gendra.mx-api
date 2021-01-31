@@ -17,6 +17,4 @@ app.use(bodyParser.json())
 
 app.post('/email', emailSender)
 
-app.listen(port, () => {
-  console.log(`Listen on port ${port}`)
-})
+app.listen(port, () => {})
