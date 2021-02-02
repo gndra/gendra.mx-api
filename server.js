@@ -4,19 +4,28 @@ import aws from 'aws-sdk'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-import emailSender from './src/email_sender.js'
+// Routes
+import emailSender from './src/email_route.js'
 
+// Middleware
+import recaptchaMiddleware from './src/middleware/recaptcha_verify.js'
+
+// Init setup
 dotenv.config()
-
 aws.config.update({region: process.env.AWS_REGION})
 
+// App port
 const port = process.env.PORT || 3000
 
+// Express App
 const app = express()
 
+// Middlewares
 app.use(cors({ origin: '*' }))
 app.use(bodyParser.json())
 
-app.post('/email', emailSender)
+// Express Routes
+app.post('/email', recaptchaMiddleware(process.env.RECAPTCHA_SECRET), emailSender)
 
+// App init
 app.listen(port, () => {})
