@@ -1,13 +1,14 @@
 import axios from 'axios'
+import url from 'url'
 
 export default (secret) => (req, res, next) => {
   try {
     if (!req.body['g-recaptcha-response']) throw new Error('missing [g-recaptcha-response] param on payload')
 
-    axios.post('https://www.google.com/recaptcha/api/siteverify', {
+    axios.post('https://www.google.com/recaptcha/api/siteverify', new url.URLSearchParams({
       secret,
       response: req.body['g-recaptcha-response']
-    })
+    }).toString())
       .then((result) => {
         if (result.data['success']) {
           next()
